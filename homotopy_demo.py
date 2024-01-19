@@ -1,7 +1,8 @@
 import numpy as np
+from scipy import optimize
 import rerun as rr
 
-from mjregrasping.homotopy_utils import discretize_path, skeleton_field_dir
+from homotopy_utils import discretize_path, skeleton_field_dir
 
 
 def h_signature_continuous(path, skeleton):
@@ -21,6 +22,7 @@ def main():
 
     rr.log("world", rr.Transform3D())
 
+    # This defines the obstacles, which each must be closed curves in 3D (loops)
     skeleton = np.array([
         [0.5, -2.5, -3.4],
         [0.5, -2.5, 1.8],
@@ -29,28 +31,32 @@ def main():
         [0.5, -2.5, -3.4],
     ])
     rr.log(f'skeleton', rr.LineStrips3D(skeleton, colors=[0, 255, 0]))
-    from scipy import optimize
 
-    def viz_test(p2_end_test, p1_end_test):
-        points1 = np.stack((np.zeros(3), p1_end_test))
+    viz_test(skeleton, np.array([0.2, 0.3, 0]), np.array([0.5, 0.7, 0]))
+    input("Press enter to continue...")
+    viz_test(skeleton, np.array([0.5, 0.2, 0]), np.array([0.5, 0.7, 0]))
+    input("Press enter to continue...")
+    viz_test(skeleton, np.array([0.5, 0.2, 0]), np.array([0.5, 0.3, 0]))
 
-        def func(p2_end_):
-            points2 = np.stack((np.zeros(3), p2_end_))
-            h1 = h_signature_continuous(points1, skeleton)
-            h2 = h_signature_continuous(points2, skeleton)
-            c = np.abs(h2 - h1)
-            return c
 
-        func(p2_end_test)
-        grad = optimize.approx_fprime(p2_end_test, func)
+def viz_test(skeleton, p2_end_test, p1_end_test):
+    points1 = np.stack((np.zeros(3), p1_end_test))
 
-        rr.log("grad", rr.Arrows3D(origins=p2_end_test, vectors=grad))
+    def func(p2_end_):
+        points2 = np.stack((np.zeros(3), p2_end_))
+        h1 = h_signature_continuous(points1, skeleton)
+        h2 = h_signature_continuous(points2, skeleton)
+        c = np.abs(h2 - h1)
+        return c
 
-        points2 = np.stack((np.zeros(3), p2_end_test))
-        rr.log("points1", rr.LineStrips3D(points1))
-        rr.log("points2", rr.LineStrips3D(points2))
+    func(p2_end_test)
+    grad = optimize.approx_fprime(p2_end_test, func)
 
-    viz_test(np.array([0.2, 0.3, 0]), np.array([0.5, 0.7, 0]))
+    rr.log("grad", rr.Arrows3D(origins=p2_end_test, vectors=grad))
+
+    points2 = np.stack((np.zeros(3), p2_end_test))
+    rr.log("points1", rr.LineStrips3D(points1))
+    rr.log("points2", rr.LineStrips3D(points2))
 
 
 if __name__ == '__main__':

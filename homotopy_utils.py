@@ -9,9 +9,11 @@ import numpy as np
 from multiset import Multiset
 from numpy.linalg import norm
 
-from mjregrasping.geometry import squared_norm
-
 NO_HOMOTOPY = Multiset([-999])
+
+
+def squared_norm(x, **kwargs):
+    return np.sum(np.square(x), axis=-1, **kwargs)
 
 
 def get_h_signature(path, skeletons: Dict):
