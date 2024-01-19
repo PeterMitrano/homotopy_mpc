@@ -32,11 +32,11 @@ def main():
     ])
     rr.log(f'skeleton', rr.LineStrips3D(skeleton, colors=[0, 255, 0]))
 
-    viz_test(skeleton, np.array([0.2, 0.3, 0]), np.array([0.5, 0.7, 0]))
+    viz_test(skeleton, np.array([0.7, 0.2, 0]), np.array([0.8, 0.3, 0]))
     input("Press enter to continue...")
     viz_test(skeleton, np.array([0.5, 0.2, 0]), np.array([0.5, 0.7, 0]))
     input("Press enter to continue...")
-    viz_test(skeleton, np.array([0.5, 0.2, 0]), np.array([0.5, 0.3, 0]))
+    viz_test(skeleton, np.array([0.2, 0.5, 0]), np.array([0.5, 0.7, 0]))
 
 
 def viz_test(skeleton, p2_end_test, p1_end_test):
@@ -55,8 +55,8 @@ def viz_test(skeleton, p2_end_test, p1_end_test):
     rr.log("grad", rr.Arrows3D(origins=p2_end_test, vectors=grad))
 
     points2 = np.stack((np.zeros(3), p2_end_test))
-    rr.log("points1", rr.LineStrips3D(points1))
-    rr.log("points2", rr.LineStrips3D(points2))
+    rr.log("points1", rr.LineStrips3D(points1, colors=[255, 0, 0]))
+    rr.log("points2", rr.LineStrips3D(points2, colors=[0, 0, 255]))
 
 
 if __name__ == '__main__':
