@@ -1,0 +1,5 @@
+rerun-sdk
+numpy
+scipy
+hjson
+multiset
