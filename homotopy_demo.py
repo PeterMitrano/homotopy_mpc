@@ -9,10 +9,7 @@ def h_signature_continuous(path, skeleton):
     path_discretized = discretize_path(path)
     path_deltas = np.diff(path_discretized, axis=0)
     bs = skeleton_field_dir(skeleton, path_discretized[:-1])
-    I = 0
-    for b_i, p_i, delta_i in zip(bs, path_discretized, path_deltas):
-        dI = np.dot(b_i, delta_i)
-        I += dI
+    I = np.sum(bs * path_deltas)
     return I
 
 
@@ -46,7 +43,7 @@ def viz_test(skeleton, p2_end_test, p1_end_test):
         points2 = np.stack((np.zeros(3), p2_end_))
         h1 = h_signature_continuous(points1, skeleton)
         h2 = h_signature_continuous(points2, skeleton)
-        c = np.abs(h2 - h1)
+        c = np.square(h2 - h1)
         return c
 
     func(p2_end_test)
